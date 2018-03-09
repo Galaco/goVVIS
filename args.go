@@ -1,4 +1,4 @@
-package vvis
+package main
 
 import (
 	"flag"
@@ -10,7 +10,7 @@ type CmdArgs struct {
 	Fast bool				// -fast
 	Verbose bool			// -verbose
 	UseRadius bool			// -radius_override X
-	VisRadius int			// -radius_override X
+	VisRadius float64		// -radius_override X
 	TraceClusterStart int	// -trace //not yet supported
 	TraceClusterStop int	// -trace //not yet supported
 	NoSort bool				// -nosort
@@ -26,7 +26,7 @@ func ParseCmdArguments() CmdArgs {
 	threads := flag.Int("threads", 1, "Number of threads")
 	fast := flag.Bool("fast", false, "Fast VVIS")
 	verbose := flag.Bool("verbose", false, "Verbose output")
-	useRadius := flag.Int("radius_override", 0, "Override vvis radius")
+	useRadius := flag.Float64("radius_override", 0, "Override vvis radius")
 	nosort := flag.Bool("nosort", false, "No sorting")
 	tmpin := flag.Bool("tmpin", false, "Use existing portalfiles")
 	low := flag.Bool("low", false, "Low priority")
