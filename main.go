@@ -13,6 +13,9 @@ import (
 	"github.com/galaco/bsp/lumps/datatypes/leaf"
 	"strings"
 	"path/filepath"
+	"github.com/galaco/vvis/portals"
+	"github.com/galaco/vvis/pas"
+	"github.com/galaco/bsp/lumps"
 )
 
 var Leafs []leaf.Leaf
@@ -59,25 +62,28 @@ func main() {
 	portalFilename += ".prt"
 	fmt.Println("Reading " + portalFilename)
 
-	LoadPortals (portalFilename)
+	portalInfo := portals.Load(portalFilename, false, file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility))
 
 	if Args.TraceClusterStart < 0 {
 		// CalcVis()
-		// CalcPAS()
+		pas.Calculate()
 
-		// BuilfClusterTable()
+		// BuildClusterTable()
 		// CalcVisibleFogVolumes()
 		// CalcDistanceFromLeavesToWater()
 
 		// visdatasize = vismap_p - dvisdata;
-		// Msg ("visdatasize:%i  compressed from %i\n", visdatasize, originalvismapsize*2);
+		fmt.Println("visdatasize:%i  compressed from %i\n", visdatasize, originalvismapsize*2)
 
-		// Msg ("writing %s\n", mapFile);
+		fmt.Println("writing %s\n", Args.File)
 		// WriteBSPFile (mapFile);
 	} else {
-		// if ( g_TraceClusterStart < 0 || g_TraceClusterStart >= portalclusters || g_TraceClusterStop < 0 || g_TraceClusterStop >= portalclusters ) {
-		//	Error("Invalid cluster trace: %d to %d, valid range is 0 to %d\n", g_TraceClusterStart, g_TraceClusterStop, portalclusters-1 );
-		// }
+		if Args.TraceClusterStart < 0 ||
+			Args.TraceClusterStart >= portalInfo.PortalClusters ||
+			Args.TraceClusterStop < 0 ||
+			Args.TraceClusterStop >= portalInfo.PortalClusters {
+			log.Fatalf("Invalid cluster trace: %d to %d, valid range is 0 to %d\n", Args.TraceClusterStart, Args.TraceClusterStop, portalInfo.PortalClusters-1 );
+		}
 		// CalcVisTrace ();
 		// WritePortalTrace(source);
 	}
@@ -145,11 +151,8 @@ func DetermineVisRadius(entities *vmf.Node) float64 {
 
 //Mark leaves as radius
 func MarkLeavesAsRadial(leafs *[]leaf.Leaf) {
-	for i,_ := range *leafs {
-		(*leafs)[i].Flags |= leaf.LEAF_FLAGS_RADIAL
+	for _,l := range *leafs {
+		f := l.Flags() | leaf.LEAF_FLAGS_RADIAL
+		l.SetFlags(f)
 	}
-}
-
-func LoadPortals(portalFilename string) {
-
 }

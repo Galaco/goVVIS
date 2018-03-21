@@ -17,6 +17,7 @@ type CmdArgs struct {
 	TmpIn string			// -tmpin
 	LowPriority bool		// -low
 	FullMiniDumps bool		// -fullMinidumps
+	UseMPI bool
 }
 
 // Read commandline arguments.
@@ -55,6 +56,7 @@ func ParseCmdArguments() CmdArgs {
 	//Not currently supported
 	args.TraceClusterStart = -1
 	args.TraceClusterStop = -1
+	args.UseMPI = false
 
 	return args
 }
